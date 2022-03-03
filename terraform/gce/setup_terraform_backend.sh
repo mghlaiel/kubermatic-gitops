@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-readonly GENERATED_BUCKET_SUFFIX="ygjkn5hkfqnt"
+readonly GENERATED_BUCKET_SUFFIX="z1v35d6oohyp"
 readonly TF_STATE_BUCKET_NAME="tf-state-kkp-$GENERATED_BUCKET_SUFFIX"
 
 echo "Setting up GCS bucket ${TF_STATE_BUCKET_NAME} for storing Terraform state."

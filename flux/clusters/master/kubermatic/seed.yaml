@@ -6,7 +6,7 @@ metadata:
 spec:
   country: Tunisia
   datacenters:
-    creometry-tn-dc:
+    TN-DC:
       country: "Tunisia"
       location: "TN"
       spec:

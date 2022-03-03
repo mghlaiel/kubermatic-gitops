@@ -52,7 +52,7 @@ jobs:
         env:
           FILE: bucket-ready
         run: |
-          gsutil -q stat "gs://tf-state-kkp-ygjkn5hkfqnt/$FILE" && echo "::set-output name=exists::true" || echo "::set-output name=exists::false"
+          gsutil -q stat "gs://tf-state-kkp-z1v35d6oohyp/$FILE" && echo "::set-output name=exists::true" || echo "::set-output name=exists::false"
       - name: Create Terraform remote backend
         working-directory: terraform/gce
         run: ./setup_terraform_backend.sh

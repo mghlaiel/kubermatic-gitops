@@ -1,8 +1,8 @@
 apiVersion: kubermatic.k8s.io/v1
 kind: Project
 metadata:
-  name: amsehltilc
+  name: ad9ruje3kb
 spec:
-  name: creometry
+  name: creometry-project
 status:
   phase: Active

@@ -5,7 +5,7 @@ metadata:
     namespace: kubermatic
 spec:
     ingress:
-        domain: tm.creometry.dev
+        domain: tn.creometry.com
         certificateIssuer:
             apiGroup: null
             kind: ClusterIssuer
@@ -15,11 +15,11 @@ spec:
         clientID: kubermatic
         issuerClientID: kubermaticIssuer
         skipTokenIssuerTLSVerify: true
-        tokenIssuer: https://tm.creometry.dev/dex
-        issuerClientSecret: ENC[AES256_GCM,data:HN9Q+cVgkly0VZj6Mw8+kk7C0Z9IYePyhhdBPs/ibOU=,iv:sFeZOveRmDS/7Yio5szN6plEgA0gykNf6mnOMJfgf9Q=,tag:Y6Gkw3XBbALNmGCNlgSaLQ==,type:str]
-        issuerCookieKey: ENC[AES256_GCM,data:yc1s17MDiSrovPc8P3694rUzeXr57KdtPnlq4kG3DFo=,iv:EHLHLQzrKqnv/8vJ+GFSjMlrZCJViPZga9I1JSSE6Hk=,tag:1xhpb8DAebt2PT405KI3xw==,type:str]
-        serviceAccountKey: ENC[AES256_GCM,data:sf3M+kKJc1Z6I04RB3mWBV8c6JcD+UgdxMiWBJ4DQPk=,iv:yQQCrs1yVMk4eo3iG8j21PyvsYoY/B4TcH0YAARqnnA=,tag:ElPE7UcMFLeSYsRobO96xQ==,type:str]
-        issuerRedirectURL: https://tm.creometry.dev/api/v1/kubeconfig
+        tokenIssuer: https://tn.creometry.com/dex
+        issuerClientSecret: ENC[AES256_GCM,data:a879isEZo/OMfDo0KtT5YhMEenkvMTbStm9SC+RuVi4=,iv:dOVRZ0uolA9P6O3RQeZX4xas0jYNMvDRuDiOS6OtGus=,tag:eP49PbNmr6Ek3EdfXH14FA==,type:str]
+        issuerCookieKey: ENC[AES256_GCM,data:hXtHYbF3e4gBwmtfyATNBawChVtlIPpALe0Rm8jUXoE=,iv:leoFBygdYU+OrdyxHxs+9YY0y1ZvOuHyPh6Qni+3100=,tag:3ZKfmpmQ4PtaiRZa9tOVlw==,type:str]
+        serviceAccountKey: ENC[AES256_GCM,data:67KCPOV62tS5Q9VxvLtwc6rRCRgEr8RRwkH9OoDF8Og=,iv:cVfJE4GfjY46Ccdw6n5EpKpXyiIStdXckRU6l1QBjL8=,tag:8vNvUfoJPCsj1ACW4XizIw==,type:str]
+        issuerRedirectURL: https://tn.creometry.com/api/v1/kubeconfig
     featureGates:
         # exposes an HTTP endpoint for generating kubeconfig
         # for a cluster that will contain OIDC tokens
@@ -46,17 +46,17 @@ sops:
     azure_kv: []
     hc_vault: []
     age:
-        - recipient: age1d5hd9cpkdae5d4myr8ex04zgcek8tls9m6a3wh0x7y597j9t5qas686wsv
+        - recipient: age1wuun9qgc25l3ps6sy6298er9d5aud9d5jz9gmj3sjx3trwxwsplqxv75qc
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYcjBIVVR4am1wT1Z2bXNF
-            Zm1uUkVHSldnSEUzanl3TXhQbGF3Vy95S2lNCkFyOVArMVlZcEF2ZDZiWTVmQlQw
-            MjNvaUV2RXU2Wm1WcTVXWDBHMHJ4VXcKLS0tIGpkbFVMRkVBS0dIdno5WVNaWXox
-            eVJaczM1WUZZVFdGeEdkT3BDNk1GSFkKuxJqR1U75T0jEKoxCmkVJRpIqtfSSaSl
-            3dJQ2n6hLdVhSUC8nuz1orgbagwZpN1kjtt/wexUv7fKQ/PbOcbQHA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBaeWJ3NnFDd3JyaDdUbmxy
+            M1RJN2VWdXFVMUgxbTRoOG9hbG42V0p4NDBnCnQ1Y2p1S1ZCWDIrQVlLQkIreFNa
+            dm92VW9rMnRleGRISnpJb1ZiUkxTdjAKLS0tIFA1eGZCYmZKdTNNbkhmM0laaC9q
+            NHhJMTJyR2VpcGl6bVB6TUJsSXprTE0Khf0OTj3Kldc/2coII1KqlSPD3DBwA4xh
+            kxPkxGPiQjEB8ezvq+lHK4AZIYdshEJxL8c5uzZzWORT/iUMjmmxTQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2022-03-03T13:13:08Z"
-    mac: ENC[AES256_GCM,data:C0xQSW8EVvzghGgqGmFjq6Cif5iqDCR/fUYDzCaCp68/uXfpRL76Dhy/2KEnb5DfL7+vCRa090XWtr9MmG5OJxDhVegZ6rBcRjZWCBibtjqpIHUaCe71oub8zubMwhrsC+UZDS6BuDAXTgRjohyH23OGaEx45cvRoDfNgX3eG1k=,iv:YyoYkiCoZ/6ozZ06Gi+0UYUKU5ExEiYisAjxP6bIUiM=,tag:L/K41ZUiLGnWY0FEBaUG9Q==,type:str]
+    lastmodified: "2022-03-03T17:43:14Z"
+    mac: ENC[AES256_GCM,data:vLERMjsC7tGYt3uAXSo+zMoipesFHQZav80XFoyCjEvd6mxmJfhd+GW/NdYlHoIrwHzMwTJbHbr7iKR/vYoLIoDZox26RAshnROGVfFkfJQi7FyWybX+yZLQs7NX937ze6Sdz7/0RHKkUSHxLXG/GkpeJPAvjSbDtodhDmuc8aY=,iv:2mPWS9pPbdhvBjwVhYoT56OxHuh2JBkiF4jPuYuWow4=,tag:9lqNWTNE2phOv3GJIk+4DQ==,type:str]
     pgp: []
     encrypted_regex: (issuerClientSecret|issuerCookieKey|serviceAccountKey)
     version: 3.7.1

@@ -11,23 +11,23 @@ spec:
     - icon: ""
       label: API
       location: default
-      url: https://tm.creometry.dev/rest-api
+      url: https://tn.creometry.com/rest-api
     - icon: ""
       label: Prometheus
       location: default
-      url: https://prometheus.tm.creometry.dev
+      url: https://prometheus.tn.creometry.com
     - icon: ""
       label: Alertmanager
       location: default
-      url: https://alertmanager.tm.creometry.dev
+      url: https://alertmanager.tn.creometry.com
     - icon: ""
       label: Grafana
       location: default
-      url: https://grafana.tm.creometry.dev
+      url: https://grafana.tn.creometry.com
     - icon: ""
       label: Karma
       location: default
-      url: https://karma.tm.creometry.dev
+      url: https://karma.tn.creometry.com
 
   defaultNodeCount: 2
   displayAPIDocs: true

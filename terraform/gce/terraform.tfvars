@@ -1,4 +1,4 @@
-cluster_name              = "kubermatic"
+cluster_name              = "creometry-tn"
 region                    = "europe-west3"
 project                   = "kubermatic-342821"
 ssh_public_key_file       = "~/.ssh/k8s_rsa.pub"
