@@ -60,8 +60,8 @@ output "kubeone_workers" {
           # provider specific fields:
           # see example under `cloudProviderSpec` section at:
           # https://github.com/kubermatic/machine-controller/blob/master/examples/gce-machinedeployment.yaml
-          diskSize              = 100
-          diskType              = "pd-balanced"
+          diskSize              = 50
+          diskType              = "pd-ssd"
           machineType           = var.workers_type
           network               = google_compute_network.network.self_link
           subnetwork            = google_compute_subnetwork.subnet.self_link
@@ -97,8 +97,8 @@ output "kubeone_workers" {
           # provider specific fields:
           # see example under `cloudProviderSpec` section at:
           # https://github.com/kubermatic/machine-controller/blob/master/examples/gce-machinedeployment.yaml
-          diskSize              = 100
-          diskType              = "pd-balanced"
+          diskSize              = 50
+          diskType              = "pd-ssd"
           machineType           = var.workers_type
           network               = google_compute_network.network.self_link
           subnetwork            = google_compute_subnetwork.subnet.self_link
@@ -134,8 +134,8 @@ output "kubeone_workers" {
           # provider specific fields:
           # see example under `cloudProviderSpec` section at:
           # https://github.com/kubermatic/machine-controller/blob/master/examples/gce-machinedeployment.yaml
-          diskSize              = 100
-          diskType              = "pd-balanced"
+          diskSize              = 50
+          diskType              = "pd-ssd"
           machineType           = var.workers_type
           network               = google_compute_network.network.self_link
           subnetwork            = google_compute_subnetwork.subnet.self_link
