@@ -1,0 +1,21 @@
+apiVersion: kubermatic.k8s.io/v1
+kind: Seed
+metadata:
+  name: kubermatic
+  namespace: kubermatic
+spec:
+  country: Tunisia
+  datacenters:
+    creometry-tn-dc:
+      country: "Tunisia"
+      location: "TN"
+      spec:
+        gcp:
+          region: "eu-west3"
+          zone_suffixes:
+            - a
+            - b
+            - c
+  kubeconfig:
+    name: kubeconfig-cluster
+    namespace: kubermatic

@@ -1,0 +1,39 @@
+apiVersion: kubermatic.k8s.io/v1
+kind: KubermaticSetting
+metadata:
+  name: globalsettings
+spec:
+  cleanupOptions:
+    Enabled: true
+    Enforced: false
+  clusterTypeOptions: 1
+  customLinks:
+    - icon: ""
+      label: API
+      location: default
+      url: https://tm.creometry.dev/rest-api
+    - icon: ""
+      label: Prometheus
+      location: default
+      url: https://prometheus.tm.creometry.dev
+    - icon: ""
+      label: Alertmanager
+      location: default
+      url: https://alertmanager.tm.creometry.dev
+    - icon: ""
+      label: Grafana
+      location: default
+      url: https://grafana.tm.creometry.dev
+    - icon: ""
+      label: Karma
+      location: default
+      url: https://karma.tm.creometry.dev
+
+  defaultNodeCount: 2
+  displayAPIDocs: true
+  displayDemoInfo: false
+  displayTermsOfService: false
+  enableDashboard: true
+  enableOIDCKubeconfig: false
+  restrictProjectCreation: false
+  userProjectsLimit: 0

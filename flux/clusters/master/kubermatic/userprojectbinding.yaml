@@ -1,0 +1,8 @@
+apiVersion: kubermatic.k8s.io/v1
+kind: UserProjectBinding
+metadata:
+  name: b9xo0dkg56
+spec:
+  group: owners-amsehltilc
+  projectId: amsehltilc
+  userEmail: mghlaiel

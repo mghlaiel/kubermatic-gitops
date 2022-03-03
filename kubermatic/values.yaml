@@ -1,0 +1,160 @@
+kubermaticOperator:
+    image:
+        tag: v2.19.2
+dex:
+    ingress:
+        host: tm.creometry.dev
+    certIssuer:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
+    env:
+        - name: KUBERNETES_POD_NAMESPACE
+          value: oauth
+    staticPasswords:
+        - email: mghlaiel
+          hash: ENC[AES256_GCM,data:9JHA26ckzFSoMgr5fpN5HIbAtmg0nx8RSqGL8E3v3SqhGHpS5CdhvF7GFENF2NCmaSdTMNh3b+B+vQD0,iv:sjJhLsuag3Md87DPqNPOOlcf4PPlyJdRLsYX1ZaJpGo=,tag:IJ/cryp3H0Anti4vj4XXTQ==,type:str]
+          username: mghlaiel
+          userID: 69a26fd6-60e0-4f21-9e65-bec669d93d43
+    clients:
+        - id: kubermatic
+          name: Kubermatic
+          secret: ENC[AES256_GCM,data:iyUL6GBcB2cauvcLNr/GZTruYugsN4xQcRO7QGE9idc=,iv:B8Q47cTaqslnhfLufpofHe0WFkHEqliXB3/SUtFOrFA=,tag:NdaB4HyniyUR8wQkthtbJw==,type:str]
+          RedirectURIs:
+            - https://tm.creometry.dev
+            - https://tm.creometry.dev/projects
+        - id: kubermaticIssuer
+          name: Kubermatic OIDC Issuer
+          secret: ENC[AES256_GCM,data:NHtrkkpWbXRify6MkCWaNQ==,iv:C4gBKfmYBPUm1HTsEU1KVblZGNM5f6hzpt2LRE+/Nvc=,tag:pAU73cNAZrjvQScRVvhpOw==,type:str]
+          RedirectURIs:
+            - https://tm.creometry.dev/api/v1/kubeconfig
+        - id: prometheus
+          name: Prometheus
+          secret: ENC[AES256_GCM,data:ESkSJj9X8jTPuP6HuWMe6A==,iv:AAfCAlniBngSu90zT1/qErmXN29i4Er7xqVa8hpYxbQ=,tag:b8QD9q3meJtFGoI6J5rRrw==,type:str]
+          RedirectURIs:
+            - https://prometheus.tm.creometry.dev/oauth/callback
+        - id: alertmanager
+          name: Alertmanager
+          secret: ENC[AES256_GCM,data:KsKJISkngW9UCqTMvWafpA==,iv:Fj2tL/S47Eb/zJKTDHphoY0G+3BAA3vCQeewnwiZT0M=,tag:kU7coGJRZORF+oo1CWG8mQ==,type:str]
+          RedirectURIs:
+            - https://alertmanager.tm.creometry.dev/oauth/callback
+        - id: grafana
+          name: Grafana
+          secret: ENC[AES256_GCM,data:KDMj8SvTMvYv/Mi72YFYqQ==,iv:7Q0RmEHScft0bG8q3gCjxW3U17YOgMzBRVXT2LeE+Uo=,tag:YO/x3l1Xp4HCT5u/voeGoQ==,type:str]
+          RedirectURIs:
+            - https://grafana.tm.creometry.dev/oauth/callback
+        - id: karma
+          name: Karma
+          secret: ENC[AES256_GCM,data:Ejyzgbit8r3fbeJTJz8Biw==,iv:OIGSuZt6bqGjhf5sfCSUq3LLZJzhKAFo0fS4aPwMS+I=,tag:wbDc2yfQRfCIpCRsdDwlNw==,type:str]
+          RedirectURIs:
+            - https://karma.tm.creometry.dev/oauth/callback
+alertmanager:
+    host: alertmanager.tm.creometry.dev
+grafana:
+    user: admin
+    password: ENC[AES256_GCM,data:nIOvhfRqdQepKpVoiYHdGA==,iv:494y5TL6PAdVGJnY5L56b0XPDPapCGO9cRZ2x7zm+Gg=,tag:l/HrgeUi2jBZiVS3UqbODQ==,type:str]
+    provisioning:
+        configuration:
+            auto_assign_org_role: Editor
+            disable_login_form: false
+            root_url: https://grafana.tm.creometry.dev
+        datasources:
+            lokiServices:
+                - loki
+prometheus:
+    host: prometheus.tm.creometry.dev
+    storageSize: 50Gi
+    tsdb:
+        retentionTime: 7d
+    ruleFiles:
+        - /etc/prometheus/rules/general-*.yaml
+        - /etc/prometheus/rules/kubermatic-*.yaml
+        - /etc/prometheus/rules/managed-*.yaml
+iap:
+    oidc_issuer_url: https://tm.creometry.dev/dex
+    deployments:
+        prometheus:
+            name: prometheus
+            ingress:
+                host: prometheus.tm.creometry.dev
+            upstream_service: prometheus.monitoring.svc.cluster.local
+            upstream_port: 9090
+            client_id: prometheus
+            client_secret: ENC[AES256_GCM,data:MDyb9qdx/XUxatVbE7gx6A==,iv:wucjWWNqKHxRUzaJ58EceDfWr7Y5++TqOtq8TDkGExM=,tag:02jBc0ws8KZ7Tkhs5rsSWA==,type:str]
+            encryption_key: ENC[AES256_GCM,data:FYDq3xYXyZY8o38A8Om0mIHLFB45CJPrZ5umAOSgy6s=,iv:YS1bcqTC4Klqugyov7HdADIa42aqWffPTvcSbp/KdiU=,tag:FmzyJW3rPN7izOtONxCuOw==,type:str]
+            config:
+                scope: groups openid email
+                email_domains:
+                    - ""
+                pass_user_headers: true
+                skip_auth_regex:
+                    - /-/health
+        alertmanager:
+            name: alertmanager
+            ingress:
+                host: alertmanager.tm.creometry.dev
+            upstream_service: alertmanager.monitoring.svc.cluster.local
+            upstream_port: 9093
+            client_id: alertmanager
+            client_secret: ENC[AES256_GCM,data:I1Awo4hwqaLsGB1HrCN63w==,iv:thjiIHP4np1r+L2gUlrGSA4bFhwmBIsY9bfjR90QxhI=,tag:loSEDGpnCePa7g0tJKpMAg==,type:str]
+            encryption_key: ENC[AES256_GCM,data:H3ZDt8mipPh6Q0wwMYN9DLG0A+DmJXyJ8ZJpOnzGC3U=,iv:2OoMQwdmDdyGDOM/c3mG5S1ZKzlTGLUdh6wkWkCkgeY=,tag:eLZNgN8QKDVADgDhzgTNlw==,type:str]
+            config:
+                scope: groups openid email
+                email_domains:
+                    - ""
+                pass_user_headers: true
+                skip_auth_regex:
+                    - /-/health
+        grafana:
+            name: grafana
+            ingress:
+                host: grafana.tm.creometry.dev
+            upstream_service: grafana.monitoring.svc.cluster.local
+            upstream_port: 3000
+            client_id: grafana
+            client_secret: ENC[AES256_GCM,data:RERtA6mZ1a1XXDRPQuztfA==,iv:Z29I9hGKcUmJmVUQjLlUI+2bbonyZiBWvzP4UGqGVbI=,tag:cw8753XYlwaFz1TzKOix8A==,type:str]
+            encryption_key: ENC[AES256_GCM,data:j2WuYnX0Q7WwEkfZFJIq28u5FH0Vleropf3PQZd4kyk=,iv:p6AujaZcB4NYZ87ib6rw9i9p/cRG/POJM2c6S1V5AbM=,tag:b4o4YNJzXPU+zX3PiacZsQ==,type:str]
+            config:
+                scope: groups openid email
+                email_domains:
+                    - ""
+                pass_user_headers: true
+                skip_auth_regex:
+                    - /api/health
+        karma:
+            name: karma
+            ingress:
+                host: karma.tm.creometry.dev
+            upstream_service: karma.monitoring.svc.cluster.local
+            upstream_port: 8080
+            client_id: karma
+            client_secret: ENC[AES256_GCM,data:wknnWWQKtx0CxFvRGiUpcw==,iv:iuux7z8Tdx8Qgx7EI+FAiDsn/JKoEpJHw6PMRH74n5o=,tag:ZphKKRwSxBU6F7AZJkAR/w==,type:str]
+            encryption_key: ENC[AES256_GCM,data:4WCIZ2pTLXAxKHmKD3T5PUvKagTYVxcqP+ibafi+2Ro=,iv:VfdGP6xqY+Xphighr8sxt1Powgyd3Z/YFU7IeMIp7WY=,tag:3BvPIF6ZzfaUF/rGwPkWkg==,type:str]
+            config:
+                scope: groups openid email
+                email_domains:
+                    - ""
+                pass_user_headers: true
+telemetry:
+    # uuid is the unique identifier of the client where the agent is running.
+    # This field is required and will print an error message when that entry is missing.
+    uuid: 88c75825-d41f-4556-841a-8b5f34c6b862
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d5hd9cpkdae5d4myr8ex04zgcek8tls9m6a3wh0x7y597j9t5qas686wsv
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBubndyNmxWdTBaOSs3Y0VK
+            UzZJWjVtNmtEd2hwOUdlK3M5bnJRTUNUYld3Cjh3MlV6WW81QkU2S3R3YkI5eFdM
+            S1h6U2VWRUhEVkxsQllXT1RmUUFtc0EKLS0tIG1pSXJDYVFoSXpkWFRpeG5kcXJD
+            RE1vbWVwTEJ1Y2EvSGErTFYwYVpaZTgKzCf9ryEFNN/Sri239jLs8tKs6Zc7GGs1
+            Ezdo7nKn1EVHyKtO6lOAPRyzMU0i9EFFsR7pGK1j0OTwTh/33JnRPA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2022-03-03T13:13:08Z"
+    mac: ENC[AES256_GCM,data:K7YX0rGWs9YbeObdS1S9F//zRq/sGIYfwmrzDXb+HKBp5QavV/zj6TedzsDBXemA2jeBQSxEYyN1aHv1reywwn1qDsHFRoIaGvgNDZKwqF2+nhV98h5eLB0ji86LsBtqJ89VmQ/+tHJkv3Ruid5XRXs4Y1OqpDClAthZpGhxXgI=,iv:IJLzXOTEX787WOEqC0yAGc65JtJjo6S4KeFv6VUOyPU=,tag:gqaksi3ba9HHp4DGNwCD1g==,type:str]
+    pgp: []
+    encrypted_regex: (hash|secret|password|encryption_key|accessKey)
+    version: 3.7.1

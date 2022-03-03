@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: kubermatic-git
+  namespace: kubermatic
+spec:
+  interval: 10m
+  ref:
+    tag: v2.19.2
+  url: https://github.com/kubermatic/kubermatic.git

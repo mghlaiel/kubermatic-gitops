@@ -1,0 +1,9 @@
+apiVersion: kubermatic.k8s.io/v1
+kind: User
+metadata:
+  name: bwfjtghpv3mhuhe4xdrhy5ghvr0cyhw3
+spec:
+  admin: true
+  email: mghlaiel
+  id: 8yr49ySp1QMhMdM66kR6TmeUnDGTKur6
+  name: mghlaiel

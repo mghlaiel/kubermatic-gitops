@@ -1,0 +1,62 @@
+apiVersion: operator.kubermatic.io/v1alpha1
+kind: KubermaticConfiguration
+metadata:
+    name: kubermatic
+    namespace: kubermatic
+spec:
+    ingress:
+        domain: tm.creometry.dev
+        certificateIssuer:
+            apiGroup: null
+            kind: ClusterIssuer
+            name: letsencrypt-prod
+        className: nginx
+    auth:
+        clientID: kubermatic
+        issuerClientID: kubermaticIssuer
+        skipTokenIssuerTLSVerify: true
+        tokenIssuer: https://tm.creometry.dev/dex
+        issuerClientSecret: ENC[AES256_GCM,data:HN9Q+cVgkly0VZj6Mw8+kk7C0Z9IYePyhhdBPs/ibOU=,iv:sFeZOveRmDS/7Yio5szN6plEgA0gykNf6mnOMJfgf9Q=,tag:Y6Gkw3XBbALNmGCNlgSaLQ==,type:str]
+        issuerCookieKey: ENC[AES256_GCM,data:yc1s17MDiSrovPc8P3694rUzeXr57KdtPnlq4kG3DFo=,iv:EHLHLQzrKqnv/8vJ+GFSjMlrZCJViPZga9I1JSSE6Hk=,tag:1xhpb8DAebt2PT405KI3xw==,type:str]
+        serviceAccountKey: ENC[AES256_GCM,data:sf3M+kKJc1Z6I04RB3mWBV8c6JcD+UgdxMiWBJ4DQPk=,iv:yQQCrs1yVMk4eo3iG8j21PyvsYoY/B4TcH0YAARqnnA=,tag:ElPE7UcMFLeSYsRobO96xQ==,type:str]
+        issuerRedirectURL: https://tm.creometry.dev/api/v1/kubeconfig
+    featureGates:
+        # exposes an HTTP endpoint for generating kubeconfig
+        # for a cluster that will contain OIDC tokens
+        OIDCKubeCfgEndpoint:
+            enabled: false
+        # configures the flags on the API server to use
+        # OAuth2 identity providers
+        OpenIDAuthPlugin:
+            enabled: false
+    ui:
+        # enable shared kubeconfig feature in the dashboard
+        config: |-
+            {
+              "share_kubeconfig": false
+            }
+    # disable default ETCD backups for user clusters (this is old way of configuring backup controllers up to 2.18)
+    # with 2.19+ new controllers for backups are not activated until backup destinations are defined on Seed resource
+    seedController:
+        backupRestore:
+            enabled: false
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1d5hd9cpkdae5d4myr8ex04zgcek8tls9m6a3wh0x7y597j9t5qas686wsv
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYcjBIVVR4am1wT1Z2bXNF
+            Zm1uUkVHSldnSEUzanl3TXhQbGF3Vy95S2lNCkFyOVArMVlZcEF2ZDZiWTVmQlQw
+            MjNvaUV2RXU2Wm1WcTVXWDBHMHJ4VXcKLS0tIGpkbFVMRkVBS0dIdno5WVNaWXox
+            eVJaczM1WUZZVFdGeEdkT3BDNk1GSFkKuxJqR1U75T0jEKoxCmkVJRpIqtfSSaSl
+            3dJQ2n6hLdVhSUC8nuz1orgbagwZpN1kjtt/wexUv7fKQ/PbOcbQHA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2022-03-03T13:13:08Z"
+    mac: ENC[AES256_GCM,data:C0xQSW8EVvzghGgqGmFjq6Cif5iqDCR/fUYDzCaCp68/uXfpRL76Dhy/2KEnb5DfL7+vCRa090XWtr9MmG5OJxDhVegZ6rBcRjZWCBibtjqpIHUaCe71oub8zubMwhrsC+UZDS6BuDAXTgRjohyH23OGaEx45cvRoDfNgX3eG1k=,iv:YyoYkiCoZ/6ozZ06Gi+0UYUKU5ExEiYisAjxP6bIUiM=,tag:L/K41ZUiLGnWY0FEBaUG9Q==,type:str]
+    pgp: []
+    encrypted_regex: (issuerClientSecret|issuerCookieKey|serviceAccountKey)
+    version: 3.7.1
