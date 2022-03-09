@@ -196,71 +196,71 @@ jobs:
 
   # Installs KKP using installer and additional resources for KKP and Flux
   # Only executed on "push" event
-  kkp-deploy:
-    runs-on: ubuntu-20.04
-    needs:
-      - kubeone-apply
-    if: ${{ github.event_name == 'push' }}
-    container: quay.io/kubermatic/startio-ci:v0.2.4-0
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-      - name: Prepare SSH agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Configure GCP Credentials
-        uses: google-github-actions/auth@v0.4.3
-        with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - name: Retrieve Terraform output
-        working-directory: terraform/gce
-        run: |
-          terraform init
-          terraform output -json > output.json
-      - name: Retrieve kubeconfig of KubeOne cluster
-        working-directory: kubeone
-        run: |
-          kubeone kubeconfig -m kubeone.yaml -t ../terraform/gce/output.json > kubeconfig
-      - name: Decrypt KKP config files
-        working-directory: kubermatic
-        run: |
-          echo ${{ secrets.SOPS_AGE_SECRET_KEY }} > .age.txt
-          export SOPS_AGE_KEY_FILE=$GITHUB_WORKSPACE/kubermatic/.age.txt
-          sops -d -i kubermatic-configuration.yaml
-          sops -d -i values.yaml
-      - name: Run KKP installer
-        env:
-          KUBECONFIG: kubeone/kubeconfig
-        run: |
-          kubectl taint nodes --all node-role.kubernetes.io/master-
-          export VERSION=v2.19.2
-          wget https://github.com/kubermatic/kubermatic/releases/download/${VERSION}/kubermatic-ce-${VERSION}-linux-amd64.tar.gz
-          tar -xzvf kubermatic-ce-${VERSION}-linux-amd64.tar.gz
-          ./kubermatic-installer deploy \
-            --config kubermatic/kubermatic-configuration.yaml \
-            --helm-values kubermatic/values.yaml \
-            --storageclass gce
-      - name: Initialize other KKP resources
-        env:
-          KUBECONFIG: kubeone/kubeconfig
-        run: |
-          # Cluster Issuer for cert-manager (let's encrypt)
-          kubectl apply -f kubermatic/cluster-issuer.yaml
-          # kubeconfig Secret to be used for Seed cluster configuration
-          kubectl create secret generic kubeconfig-cluster -n kubermatic \
-            --from-file=kubeconfig=$GITHUB_WORKSPACE/kubeone/kubeconfig --dry-run=client -o yaml | kubectl apply -f -
-          # Values for helm releases are able to read secret only from same namespace so we need values in all NS
-          
-          kubectl create secret generic kubermatic-values -n logging \
-            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret generic kubermatic-values -n monitoring \
-            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret generic kubermatic-values -n iap \
-            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
-          
-          cat kubermatic/.age.txt | kubectl -n kubermatic create secret generic sops-age \
-            --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
+#  kkp-deploy:
+#    runs-on: ubuntu-20.04
+#    needs:
+#      - kubeone-apply
+#    if: ${{ github.event_name == 'push' }}
+#    container: quay.io/kubermatic/startio-ci:v0.2.4-0
+#    steps:
+#      - name: Check out repository
+#        uses: actions/checkout@v2
+#      - name: Prepare SSH agent
+#        uses: webfactory/ssh-agent@v0.5.3
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#      - name: Configure GCP Credentials
+#        uses: google-github-actions/auth@v0.4.3
+#        with:
+#          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+#      - name: Retrieve Terraform output
+#        working-directory: terraform/gce
+#        run: |
+#          terraform init
+#          terraform output -json > output.json
+#      - name: Retrieve kubeconfig of KubeOne cluster
+#        working-directory: kubeone
+#        run: |
+#          kubeone kubeconfig -m kubeone.yaml -t ../terraform/gce/output.json > kubeconfig
+#      - name: Decrypt KKP config files
+#        working-directory: kubermatic
+#        run: |
+#          echo ${{ secrets.SOPS_AGE_SECRET_KEY }} > .age.txt
+#          export SOPS_AGE_KEY_FILE=$GITHUB_WORKSPACE/kubermatic/.age.txt
+#          sops -d -i kubermatic-configuration.yaml
+#          sops -d -i values.yaml
+#      - name: Run KKP installer
+#        env:
+#          KUBECONFIG: kubeone/kubeconfig
+#        run: |
+#          kubectl taint nodes --all node-role.kubernetes.io/master-
+#          export VERSION=v2.19.2
+#          wget https://github.com/kubermatic/kubermatic/releases/download/${VERSION}/kubermatic-ce-${VERSION}-linux-amd64.tar.gz
+#          tar -xzvf kubermatic-ce-${VERSION}-linux-amd64.tar.gz
+#          ./kubermatic-installer deploy \
+#            --config kubermatic/kubermatic-configuration.yaml \
+#            --helm-values kubermatic/values.yaml \
+#            --storageclass gce
+#      - name: Initialize other KKP resources
+#        env:
+#          KUBECONFIG: kubeone/kubeconfig
+#        run: |
+#          # Cluster Issuer for cert-manager (let's encrypt)
+#          kubectl apply -f kubermatic/cluster-issuer.yaml
+#          # kubeconfig Secret to be used for Seed cluster configuration
+#          kubectl create secret generic kubeconfig-cluster -n kubermatic \
+#            --from-file=kubeconfig=$GITHUB_WORKSPACE/kubeone/kubeconfig --dry-run=client -o yaml | kubectl apply -f -
+#          # Values for helm releases are able to read secret only from same namespace so we need values in all NS
+#          
+#          kubectl create secret generic kubermatic-values -n logging \
+#            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
+#          kubectl create secret generic kubermatic-values -n monitoring \
+#            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
+#          kubectl create secret generic kubermatic-values -n iap \
+#            --from-file=values.yaml=$GITHUB_WORKSPACE/kubermatic/values.yaml --dry-run=client -o yaml | kubectl apply -f -
+#          
+#          cat kubermatic/.age.txt | kubectl -n kubermatic create secret generic sops-age \
+#            --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
 
   # Bootstraps Flux in this Github repository and existing k8s cluster
   # Only executed on "push" event
