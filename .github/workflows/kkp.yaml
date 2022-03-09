@@ -262,59 +262,59 @@ jobs:
 #          cat kubermatic/.age.txt | kubectl -n kubermatic create secret generic sops-age \
 #            --from-file=age.agekey=/dev/stdin --dry-run=client -o yaml | kubectl apply -f -
 
-  # Bootstraps Flux in this Github repository and existing k8s cluster
-  # Only executed on "push" event
-  flux-bootstrap:
-    runs-on: ubuntu-20.04
-    needs:
-      - kkp-deploy
-    if: ${{ github.event_name == 'push' }}
-    container: quay.io/kubermatic/startio-ci:v0.2.4-0
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-      - name: Check if flux was already bootstrapped
-        id: check_flux
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "flux/clusters/master/flux-system"
-      - name: Flux is already bootstrapped in this repository
-        if: steps.check_flux.outputs.files_exists == 'true'
-        run: echo "Flux is already boostrapped, no action needed"
-      - name: Prepare SSH agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Configure GCP Credentials
-        uses: google-github-actions/auth@v0.4.3
-        with:
-          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - name: Retrieve Terraform output
-        working-directory: terraform/gce
-        run: |
-          terraform init
-          terraform output -json > output.json
-      - name: Retrieve kubeconfig of KubeOne cluster
-        working-directory: kubeone
-        run: |
-          kubeone kubeconfig -m kubeone.yaml -t ../terraform/gce/output.json > kubeconfig
-      - name: Split GITHUB_REPOSITORY
-        if: steps.check_flux.outputs.files_exists == 'false'
-        uses: rishabhgupta/split-by@v1
-        id: split-repo
-        with:
-          string: ${{ github.repository }}
-          split-by: '/'
-      - name: Bootstrap flux
-        if: steps.check_flux.outputs.files_exists == 'false'
-        env:
-          KUBECONFIG: kubeone/kubeconfig
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-        run: |
-          flux bootstrap github \
-            --owner=${{ steps.split-repo.outputs._0 }} \
-            --repository=${{ steps.split-repo.outputs._1 }} \
-            --branch=main \
-            --personal=true \
-            --path=flux/clusters/master \
-            --commit-message-appendix='[ci skip]'
+    # Bootstraps Flux in this Github repository and existing k8s cluster
+#   # Only executed on "push" event
+#   flux-bootstrap:
+#     runs-on: ubuntu-20.04
+#     needs:
+#       - kkp-deploy
+#     if: ${{ github.event_name == 'push' }}
+#     container: quay.io/kubermatic/startio-ci:v0.2.4-0
+#     steps:
+#       - name: Check out repository
+#         uses: actions/checkout@v2
+#       - name: Check if flux was already bootstrapped
+#         id: check_flux
+#         uses: andstor/file-existence-action@v1
+#         with:
+#           files: "flux/clusters/master/flux-system"
+#       - name: Flux is already bootstrapped in this repository
+#         if: steps.check_flux.outputs.files_exists == 'true'
+#         run: echo "Flux is already boostrapped, no action needed"
+#       - name: Prepare SSH agent
+#         uses: webfactory/ssh-agent@v0.5.3
+#         with:
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#       - name: Configure GCP Credentials
+#         uses: google-github-actions/auth@v0.4.3
+#         with:
+#           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+#       - name: Retrieve Terraform output
+#         working-directory: terraform/gce
+#         run: |
+#           terraform init
+#           terraform output -json > output.json
+#       - name: Retrieve kubeconfig of KubeOne cluster
+#         working-directory: kubeone
+#         run: |
+#           kubeone kubeconfig -m kubeone.yaml -t ../terraform/gce/output.json > kubeconfig
+#       - name: Split GITHUB_REPOSITORY
+#         if: steps.check_flux.outputs.files_exists == 'false'
+#         uses: rishabhgupta/split-by@v1
+#         id: split-repo
+#         with:
+#           string: ${{ github.repository }}
+#           split-by: '/'
+#       - name: Bootstrap flux
+#         if: steps.check_flux.outputs.files_exists == 'false'
+#         env:
+#           KUBECONFIG: kubeone/kubeconfig
+#           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+#         run: |
+#           flux bootstrap github \
+#             --owner=${{ steps.split-repo.outputs._0 }} \
+#             --repository=${{ steps.split-repo.outputs._1 }} \
+#             --branch=main \
+#             --personal=true \
+#             --path=flux/clusters/master \
+#             --commit-message-appendix='[ci skip]'
